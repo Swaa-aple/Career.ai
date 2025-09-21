@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Advisor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 20px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            top: 40%;
+            left: 80%;
+            animation-delay: 4s;
+        }
+
+        .shape-4 {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 15px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(10px) rotate(-3deg); }
+            75% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            color: white;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            line-height: 1.2;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+
+        .header-icon {
+            display: inline-block;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Main Cards Container */
+        .cards-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .mode-card:hover::before {
+            left: 100%;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .mode-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .mode-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .mode-card p {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .mode-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .mode-btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Quick Feature Card */
+        .quick-feature {
+            grid-column: 1 / -1;
+            background: rgba(76, 175, 80, 0.95);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .quick-feature h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .quick-feature p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        /* Feature Highlights */
+        .features-grid {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            gap: 2rem;
+        }
+
+        .feature-highlight {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            flex: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-highlight h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .feature-highlight p {
+            font-weight: 600;
+        }
+
+        /* Career Form (hidden by default) */
+        .career-form {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .career-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .header .subtitle {
+                font-size: 1rem;
+            }
+
+            .cards-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .features-grid {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .mode-card {
+                padding: 2rem;
+            }
+        }
+
+        .learning-path-step {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+            border: 2px solid #e1e8f7;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .learning-path-step:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .step-number {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .step-content h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .step-duration {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+        }
+
+        .resource-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .resource-link {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .resource-link:hover {
+            background: rgba(40, 167, 69, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .path-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .path-summary h2 {
+            margin-bottom: 1rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .summary-stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-stat .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .summary-stat .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="background-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-icon">🎯</div>
+            <h1>AI Career Advisor</h1>
+            <p class="subtitle">Discover your perfect career path with AI-powered guidance</p>
+        </div>
+
+        <!-- Main Cards -->
+        <div class="cards-container" id="mainCards">
+            <!-- Chat Mode Card -->
+            <div class="mode-card">
+                <div class="mode-card-icon">💬</div>
+                <h3>Chat Mode</h3>
+                <p>Have a natural conversation with your AI career advisor. Ask questions, get instant responses, and explore ideas together!</p>
+                <a href="/chat" class="mode-btn">Start Chatting</a>
+            </div>
+
+            <!-- Detailed Analysis Card -->
+            <div class="mode-card" onclick="showDetailedForm()">
+                <div class="mode-card-icon">📊</div>
+                <h3>Detailed Analysis</h3>
+                <p>Get a comprehensive career report with structured recommendations, action plans, and learning resources.</p>
+                <div class="mode-btn">Get Analysis</div>
+            </div>
+
+            <!-- Quick Feature Card -->
+            <div class="quick-feature">
+                <h3>✨ Quick Feature: Learning Paths</h3>
+                <p>Get a personalized 5-step roadmap to learn the skills for your new career</p>
+                <button class="mode-btn" onclick="showLearningPath()" style="background: rgba(255,255,255,0.2);">
+                    Build Learning Plan
+                </button>
+            </div>
+        </div>
+
+        <!-- Feature Highlights -->
+        <div class="features-grid">
+            <div class="feature-highlight">
+                <h4>Hackathon Feature Spotlight:</h4>
+                <p>AI-Powered Skills Gap Analysis</p>
+            </div>
+            <div class="feature-highlight">
+                <h4>Built with:</h4>
+                <p>Node.js, EJS, Gemini AI</p>
+            </div>
+        </div>
+
+        <!-- Hidden Detailed Form -->
+        <form action="/advice" method="POST" class="career-form" id="careerForm">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">📋 Career Analysis Form</h2>
+            
+            <div class="form-group">
+                <label for="interests">Tell me about your interests, skills, or career goals:</label>
+                <textarea 
+                    id="interests" 
+                    name="interests" 
+                    placeholder="e.g., I love technology and helping people, or I'm good at creative problem-solving..."
+                    required
+                    rows="4"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Experience Level:</label>
+                <select id="experience" name="experience">
+                    <option value="beginner">🌱 Beginner / Student</option>
+                    <option value="some">💼 Some Experience (1-3 years)</option>
+                    <option value="experienced">🚀 Experienced (3+ years)</option>
+                    <option value="expert">👑 Expert / Leadership</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location Preference:</label>
+                <select id="location" name="location">
+                    <option value="global">🌍 Global / Remote</option>
+                    <option value="usa">🇺🇸 United States</option>
+                    <option value="europe">🇪🇺 Europe</option>
+                    <option value="asia">🌏 Asia</option>
+                    <option value="other">🗺️ Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="promptStyle">Advice Style:</label>
+                <select id="promptStyle" name="promptStyle">
+                    <option value="structured">📋 Structured & Clear</option>
+                    <option value="conversational">💬 Friendly & Engaging</option>
+                    <option value="expert">👩‍💼 Expert Consultation</option>
+                    <option value="analytical">🔍 Deep Analysis</option>
+                    <option value="datadriven">📊 Data-Driven Insights</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                🚀 Get Career Analysis
+            </button>
+
+            <div style="text-align: center; margin-top: 1rem;">
+                <button type="button" onclick="showMainCards()" style="background: none; border: none; color: #667eea; cursor: pointer; text-decoration: underline;">
+                    ← Back to main options
+                </button>
+            </div>
+        </form>
+
+        <!-- Learning Path Form -->
+        <form class="career-form" id="learningPathForm">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">🚀 Build Your Learning Path</h2>
+            
+            <div class="form-group">
+                <label for="targetCareer">What career are you interested in?</label>
+                <textarea 
+                    id="targetCareer" 
+                    name="targetCareer" 
+                    placeholder="e.g., Web Developer, Data Scientist, UX Designer, Digital Marketing Manager..."
+                    required
+                    rows="3"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="currentSkills">What skills do you currently have?</label>
+                <textarea 
+                    id="currentSkills" 
+                    name="currentSkills" 
+                    placeholder="e.g., Basic HTML/CSS, Microsoft Office, Customer Service, Photography..."
+                    rows="3"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="timeline">How much time can you dedicate to learning?</label>
+                <select id="timeline" name="timeline">
+                    <option value="1-2 hours/week">⏰ 1-2 hours per week (Casual pace)</option>
+                    <option value="5-10 hours/week">📚 5-10 hours per week (Steady progress)</option>
+                    <option value="15-20 hours/week">🚀 15-20 hours per week (Intensive)</option>
+                    <option value="20+ hours/week">⚡ 20+ hours per week (Full-time)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="learningStyle">Preferred learning style:</label>
+                <select id="learningStyle" name="learningStyle">
+                    <option value="visual">👁️ Visual (Videos, diagrams, infographics)</option>
+                    <option value="hands-on">🛠️ Hands-on (Projects, coding, practice)</option>
+                    <option value="reading">📖 Reading (Books, articles, documentation)</option>
+                    <option value="mixed">🎯 Mixed (Combination of all styles)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="budget">Learning budget:</label>
+                <select id="budget" name="budget">
+                    <option value="free">💚 Free resources only</option>
+                    <option value="low">💡 Low budget ($0-$50/month)</option>
+                    <option value="medium">💼 Medium budget ($50-$200/month)</option>
+                    <option value="high">💎 Higher budget ($200+ /month)</option>
+                </select>
+            </div>
+
+            <button type="button" class="submit-btn" id="generatePathBtn" onclick="generateLearningPath()">
+                ✨ Generate My Learning Path
+            </button>
+
+            <div style="text-align: center; margin-top: 1rem;">
+                <button type="button" onclick="showMainCards()" style="background: none; border: none; color: #667eea; cursor: pointer; text-decoration: underline;">
+                    ← Back to main options
+                </button>
+            </div>
+        </form>
+
+        <!-- Learning Path Result -->
+        <div class="career-form" id="learningPathResult">
+            <div id="pathContent"></div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="submit-btn" onclick="showMainCards()" style="background: linear-gradient(45deg, #28a745, #20c997);">
+                    🏠 Back to Home
+                </button>
+                <button type="button" onclick="showLearningPathForm()" style="background: none; border: 2px solid #667eea; color: #667eea; margin-left: 1rem; padding: 1rem 2rem; border-radius: 12px; cursor: pointer;">
+                    🔄 Create Another Path
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDetailedForm() {
+            document.getElementById('mainCards').style.display = 'none';
+            document.getElementById('careerForm').classList.add('active');
+        }
+
+        function showMainCards() {
+            document.getElementById('mainCards').style.display = 'grid';
+            document.getElementById('careerForm').classList.remove('active');
+            document.getElementById('learningPathForm').classList.remove('active');
+            document.getElementById('learningPathResult').classList.remove('active');
+        }
+
+        function showLearningPathForm() {
+            document.getElementById('mainCards').style.display = 'none';
+            document.getElementById('careerForm').classList.remove('active');
+            document.getElementById('learningPathResult').classList.remove('active');
+            document.getElementById('learningPathForm').classList.add('active');
+        }
+
+        async function generateLearningPath() {
+            const btn = document.getElementById('generatePathBtn');
+            const originalText = btn.innerHTML;
+            
+            // Get form data
+            const targetCareer = document.getElementById('targetCareer').value.trim();
+            const currentSkills = document.getElementById('currentSkills').value.trim();
+            const timeline = document.getElementById('timeline').value;
+            const learningStyle = document.getElementById('learningStyle').value;
+            const budget = document.getElementById('budget').value;
+
+            if (!targetCareer) {
+                alert('Please tell us what career you\'re interested in!');
+                return;
+            }
+
+            // Show loading state
+            btn.innerHTML = '<div class="loading"></div> Creating your path...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/learning-path', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        targetCareer,
+                        currentSkills,
+                        timeline,
+                        learningStyle,
+                        budget
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.response);
+                }
+
+                // Display the learning path
+                displayLearningPath(data.learningPath);
+
+                // Hide form and show result
+                document.getElementById('learningPathForm').classList.remove('active');
+                document.getElementById('learningPathResult').classList.add('active');
+
+            } catch (error) {
+                console.error('Error generating learning path:', error);
+                alert('Sorry, there was an error generating your learning path. Please try again!');
+            } finally {
+                // Reset button
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function displayLearningPath(pathData) {
+            const pathContent = document.getElementById('pathContent');
+            
+            // Parse the AI response to create structured learning path
+            const learningPath = parseLearningPathResponse(pathData);
+            
+            pathContent.innerHTML = `
+                <div class="path-summary">
+                    <h2>🎯 Your Personalized Learning Path</h2>
+                    <p>Here's your custom 5-step roadmap to achieve your career goals!</p>
+                    <div class="summary-stats">
+                        <div class="summary-stat">
+                            <span class="stat-number">5</span>
+                            <span class="stat-label">Learning Steps</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="stat-number">${learningPath.totalDuration}</span>
+                            <span class="stat-label">Estimated Time</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="stat-number">${learningPath.resources}</span>
+                            <span class="stat-label">Resources</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="stat-number">${learningPath.difficulty}</span>
+                            <span class="stat-label">Difficulty</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="learning-steps">
+                    ${learningPath.steps.map((step, index) => `
+                        <div class="learning-path-step">
+                            <div class="step-number">${index + 1}</div>
+                            <div class="step-content">
+                                <div class="step-duration">${step.duration}</div>
+                                <h3>${step.title}</h3>
+                                <p>${step.description}</p>
+                                <div class="resource-links">
+                                    ${step.resources.map(resource => 
+                                        `<span class="resource-link">${resource}</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 12px; margin-top: 2rem; border-left: 4px solid #28a745;">
+                    <h4 style="color: #333; margin-bottom: 0.5rem;">💡 Pro Tips for Success:</h4>
+                    <ul style="color: #666; margin: 0; padding-left: 1.5rem;">
+                        <li>Set aside dedicated learning time each day</li>
+                        <li>Build projects while you learn to practice skills</li>
+                        <li>Join communities and networks in your target field</li>
+                        <li>Track your progress and celebrate small wins</li>
+                        <li>Don't be afraid to adjust the plan as you go</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function parseLearningPathResponse(response) {
+            // This function creates a structured learning path from AI response
+            // In a real implementation, you'd want more sophisticated parsing
+            
+            const defaultPath = {
+                totalDuration: "3-6 months",
+                resources: "15+",
+                difficulty: "Beginner",
+                steps: [
+                    {
+                        title: "Foundation Building",
+                        duration: "Week 1-2",
+                        description: "Learn the fundamental concepts and terminology of your chosen field.",
+                        resources: ["Free tutorials", "Documentation", "YouTube videos"]
+                    },
+                    {
+                        title: "Core Skills Development", 
+                        duration: "Week 3-6",
+                        description: "Master the essential technical skills required for your target role.",
+                        resources: ["Online courses", "Practice exercises", "Coding challenges"]
+                    },
+                    {
+                        title: "Hands-on Projects",
+                        duration: "Week 7-10", 
+                        description: "Build real projects to apply your knowledge and create a portfolio.",
+                        resources: ["Project tutorials", "GitHub", "Portfolio platforms"]
+                    },
+                    {
+                        title: "Advanced Concepts",
+                        duration: "Week 11-14",
+                        description: "Dive deeper into specialized areas and advanced techniques.",
+                        resources: ["Advanced courses", "Industry blogs", "Expert interviews"]
+                    },
+                    {
+                        title: "Professional Preparation",
+                        duration: "Week 15-16",
+                        description: "Prepare for job applications, interviews, and networking.",
+                        resources: ["Resume templates", "Interview prep", "LinkedIn optimization"]
+                    }
+                ]
+            };
+
+            // Try to extract structured data from the AI response
+            // For now, return default path with AI response included
+            return {
+                ...defaultPath,
+                aiResponse: response
+            };
+        }
+
+        function showLearningPath() {
+            document.getElementById('mainCards').style.display = 'none';
+            document.getElementById('learningPathForm').classList.add('active');
+        }
+
+        // Form submission with loading state
+        document.getElementById('careerForm').addEventListener('submit', function() {
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = '<div class="loading"></div> Analyzing...';
+            btn.disabled = true;
+        });
+
+        // Add some interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to floating shapes
+            const shapes = document.querySelectorAll('.floating-shape');
+            shapes.forEach(shape => {
+                shape.addEventListener('mouseenter', function() {
+                    this.style.opacity = '0.2';
+                    this.style.transform = 'scale(1.1)';
+                });
+                
+                shape.addEventListener('mouseleave', function() {
+                    this.style.opacity = '0.1';
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

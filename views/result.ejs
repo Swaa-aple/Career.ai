@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Career Advice - AI Career Advisor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating particles background */
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: particleFloat 25s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(150px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+            animation: headerSlideIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes headerSlideIn {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #ffffff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGlow 3s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        @keyframes textGlow {
+            0% { 
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+                transform: scale(1);
+            }
+            100% { 
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+                transform: scale(1.02);
+            }
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s both;
+            font-weight: 400;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 0.9;
+            }
+        }
+
+        .advice-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            margin-bottom: 3rem;
+            animation: cardSlideIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s both;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes cardSlideIn {
+            0% {
+                transform: translateY(80px) scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .advice-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
+            pointer-events: none;
+        }
+
+        .advice-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 80px rgba(0,0,0,0.4);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .advice-content {
+            padding: 3rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #333;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Enhanced content animations */
+        .advice-content > * {
+            animation: contentFadeIn 0.8s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .advice-content > *:nth-child(1) { animation-delay: 0.6s; }
+        .advice-content > *:nth-child(2) { animation-delay: 0.7s; }
+        .advice-content > *:nth-child(3) { animation-delay: 0.8s; }
+        .advice-content > *:nth-child(4) { animation-delay: 0.9s; }
+        .advice-content > *:nth-child(5) { animation-delay: 1.0s; }
+
+        @keyframes contentFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Style the AI response formatting with enhanced effects */
+        .advice-content h1, .advice-content h2, .advice-content h3 {
+            color: #667eea;
+            margin: 2rem 0 1.5rem 0;
+            font-weight: 700;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .advice-content h1:hover, .advice-content h2:hover, .advice-content h3:hover {
+            color: #5a6fd8;
+            transform: translateX(5px);
+        }
+
+        .advice-content h1::before, .advice-content h2::before, .advice-content h3::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+            transition: height 0.3s ease;
+            transform: translateY(-50%);
+        }
+
+        .advice-content h1:hover::before, .advice-content h2:hover::before, .advice-content h3:hover::before {
+            height: 100%;
+        }
+
+        .advice-content h1 { font-size: 2rem; }
+        .advice-content h2 { font-size: 1.6rem; }
+        .advice-content h3 { font-size: 1.3rem; }
+
+        .advice-content p {
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .advice-content p:hover {
+            transform: translateX(3px);
+            color: #2c3e50;
+        }
+
+        .advice-content ul, .advice-content ol {
+            margin: 1.5rem 0 1.5rem 2rem;
+        }
+
+        .advice-content li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            transition: all 0.3s ease;
+            padding-left: 0.5rem;
+        }
+
+        .advice-content li:hover {
+            transform: translateX(5px);
+            color: #2c3e50;
+        }
+
+        .advice-content li::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            transform: translateY(-50%) scale(0);
+            transition: transform 0.3s ease;
+        }
+
+        .advice-content li:hover::before {
+            transform: translateY(-50%) scale(1);
+        }
+
+        .advice-content strong {
+            color: #555;
+            font-weight: 600;
+            position: relative;
+            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            background-size: 200% 100%;
+            transition: background-position 0.3s ease;
+        }
+
+        .advice-content strong:hover {
+            background-position: 100% 0;
+        }
+
+        /* Enhanced pre formatting */
+        .advice-content pre {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            margin: 2rem 0;
+            white-space: pre-wrap;
+            font-family: inherit;
+            overflow-x: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .advice-content pre:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+            border-left-color: #764ba2;
+        }
+
+        .advice-content pre::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .advice-content pre:hover::before {
+            opacity: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+            animation: buttonsSlideIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s both;
+        }
+
+        @keyframes buttonsSlideIn {
+            0% {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border: none;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.05rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            border: 2px solid rgba(255,255,255,0.5);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,1);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-chat {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-chat:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(40, 167, 69, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(1.02);
+            transition: all 0.1s ease;
+        }
+
+        .feedback-section {
+            background: rgba(255,255,255,0.15);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            animation: feedbackSlideIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s both;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes feedbackSlideIn {
+            0% {
+                transform: translateY(60px) scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .feedback-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            pointer-events: none;
+        }
+
+        .feedback-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+        }
+
+        .feedback-section h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            animation: textPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .rating-btn {
+            padding: 1rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-size: 1rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rating-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .rating-btn:hover::before {
+            opacity: 1;
+        }
+
+        .rating-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        .rating-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .share-section {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .share-section:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .share-section p {
+            margin: 0;
+            animation: shareTextGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes shareTextGlow {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        #feedbackMessage {
+            margin-top: 1.5rem;
+            font-style: italic;
+            font-size: 1.1rem;
+            animation: fadeIn 0.5s ease;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Success message animation */
+        .success-message {
+            animation: successPulse 0.6s ease;
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive design enhancements */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .advice-content {
+                padding: 2rem;
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+                padding: 1rem 2rem;
+            }
+
+            .rating-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .rating-btn {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .feedback-section {
+                padding: 2rem;
+            }
+
+            .rating-buttons {
+                gap: 0.8rem;
+            }
+
+            .rating-btn {
+                width: 180px;
+                padding: 0.8rem 1.2rem;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white !important;
+                animation: none !important;
+            }
+            
+            .particles-bg,
+            .action-buttons,
+            .feedback-section {
+                display: none !important;
+            }
+            
+            .advice-container {
+                box-shadow: none !important;
+                border: 1px solid #ddd;
+                background: white !important;
+                animation: none !important;
+            }
+
+            .advice-content * {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+        }
+
+        /* Accessibility improvements */
+        .btn:focus,
+        .rating-btn:focus {
+            outline: 3px solid rgba(255, 255, 255, 0.6);
+            outline-offset: 2px;
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated particles background -->
+    <div class="particles-bg" id="particlesBg"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Your Personalized Career Guidance</h1>
+            <p>AI-powered insights tailored just for you</p>
+        </div>
+
+        <div class="advice-container">
+            <div class="advice-content">
+                <!-- Convert the advice text to HTML format -->
+                <%- advice.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') %>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="/" class="btn btn-primary">
+                🔄 Get More Advice
+            </a>
+            
+            <a href="/chat" class="btn btn-chat">
+                💬 Continue in Chat
+            </a>
+            
+            <button onclick="window.print()" class="btn btn-secondary">
+                🖨️ Save/Print
+            </button>
+            
+            <button onclick="shareAdvice()" class="btn btn-secondary">
+                📤 Share
+            </button>
+            
+            <button onclick="copyToClipboard()" class="btn btn-secondary">
+                📋 Copy Text
+            </button>
+        </div>
+
+        <div class="feedback-section">
+            <h3>How helpful was this advice?</h3>
+            <div class="rating-buttons">
+                <button class="rating-btn" onclick="submitFeedback('excellent')">😍 Excellent</button>
+                <button class="rating-btn" onclick="submitFeedback('good')">👍 Good</button>
+                <button class="rating-btn" onclick="submitFeedback('okay')">😐 Okay</button>
+                <button class="rating-btn" onclick="submitFeedback('poor')">👎 Poor</button>
+            </div>
+            <div id="feedbackMessage" style="display: none;"></div>
+            
+            <div class="share-section">
+                <p style="font-size: 1rem; opacity: 0.8;">
+                    💡 Found this helpful? Share it with friends or save it for later reference!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesBg = document.getElementById('particlesBg');
+            const particleCount = 40;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 25 + 's';
+                particle.style.animationDuration = (20 + Math.random() * 10) + 's';
+                particlesBg.appendChild(particle);
+            }
+        }
+
+        // Enhanced share functionality
+        function shareAdvice() {
+            const btn = event.target.closest('.btn');
+            btn.style.animation = 'successPulse 0.6s ease';
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My AI Career Advice',
+                    text: 'Check out this personalized career guidance I got from AI!',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showSuccessMessage('✅ Link copied to clipboard! Share it with others.');
+                }).catch(() => {
+                    prompt('Copy this link to share:', window.location.href);
+                });
+            }
+            
+            setTimeout(() => {
+                btn.style.animation = '';
+            }, 600);
+        }
+
+        // Enhanced copy functionality
+        function copyToClipboard() {
+            const btn = event.target.closest('.btn');
+            btn.style.animation = 'successPulse 0.6s ease';
+            
+            const adviceText = document.querySelector('.advice-content').innerText;
+            navigator.clipboard.writeText(adviceText).then(() => {
+                showSuccessMessage('✅ Career advice copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = adviceText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showSuccessMessage('✅ Career advice copied to clipboard!');
+            });
+            
+            setTimeout(() => {
+                btn.style.animation = '';
+            }, 600);
+        }
+
+        // Enhanced feedback system
+        function submitFeedback(rating) {
+            const btn = event.target;
+            btn.style.animation = 'successPulse 0.6s ease';
+            
+            const messages = {
+                excellent: "🎉 Awesome! Thanks for the feedback!",
+                good: "👍 Great! Glad it was helpful!",  
+                okay: "👌 Thanks! We'll keep improving!",
+                poor: "😔 Sorry about that. We'll do better!"
+            };
+            
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            feedbackMessage.textContent = messages[rating];
+            feedbackMessage.style.display = 'block';
+            feedbackMessage.classList.add('success-message');
+            
+            // Optional: Send feedback to server
+            fetch('/api/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating, page: 'result' })
+            }).catch(() => {}); // Silent fail
+            
+            setTimeout(() => {
+                btn.style.animation = '';
+                feedbackMessage.classList.remove('success-message');
+            }, 600);
+        }
+
+        // Success message helper
+        function showSuccessMessage(message) {
+            // Create a temporary success notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #28a745, #20c997);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 15px;
+                box-shadow: 0 15px 40px rgba(40, 167, 69, 0.4);
+                z-index: 10000;
+                animation: slideInRight 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
+                font-weight: 600;
+                backdrop-filter: blur(10px);
+            `;
+            notification.textContent = message;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(400px); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    to { opacity: 0; transform: translateX(400px); }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+                if (style.parentNode) {
+                    style.remove();
+                }
+            }, 3000);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Smooth scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Add intersection observer for content animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.advice-content > *').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Add smooth transitions for dynamic content
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('.btn, .rating-btn')) {
+                e.target.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
